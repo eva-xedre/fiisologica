@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+
+# Note: This file instructs well-behaved crawlers not to index or crawl
+# any pages on this site while it is in draft. Some crawlers ignore robots.txt.
