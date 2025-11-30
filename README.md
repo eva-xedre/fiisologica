@@ -31,7 +31,11 @@ If you publish a build output directory, add a build step (for example `npm run 
 
 ## Troubleshooting
 
-- Permission errors: ensure Actions is allowed to manage Pages in repository settings and the workflow has `pages: write` and `id-token: write` permissions (the workflow in this repo already sets these).
-- If you have a custom domain, add a `CNAME` file in the publish directory or configure the domain in the Pages settings.
+- Permission errors (403 when pushing to `gh-pages`):
+	- Make sure GitHub Actions is allowed to make changes in this repository (Organization or repo settings may restrict Actions write permissions).
+	- The workflow includes the recommended permissions (`contents: write`, `pages: write`, `id-token: write`), but some orgs or repos restrict what the `GITHUB_TOKEN` can do. If you still see a `Write access to repository not granted` or `fatal: unable to access` error, create a personal access token (PAT) with `repo` scope and add it to the repository secrets (for example name it `GH_PAGES_PAT`). Then update the workflow to use that token by replacing `github_token: ${{ secrets.GITHUB_TOKEN }}` in `.github/workflows/deploy.yml` with `personal_token: ${{ secrets.GH_PAGES_PAT }}`.
+	- Branch protection rules that require reviews or block force-pushes may also prevent the workflow from updating `gh-pages`. Either allow GitHub Actions to push to protected branches (in branch protection settings) or relax rules for the `gh-pages` branch.
 
-If you'd like, I can also add a short note in this README showing how to publish from a branch like `gh-pages` instead of using the Pages actions.
+- Custom domain: if you use a custom domain, add a `CNAME` file to the publish directory (it will be copied into `site/`), or configure the domain in the Pages settings.
+
+If you'd like, I can update the workflow to automatically use a `GH_PAGES_PAT` secret if present, add a small check to fail early with a clear error message, or switch to publishing via the official Pages actions once the deprecated artifact action issue is resolved.
