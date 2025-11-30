@@ -26,6 +26,7 @@ jobs:
           cp -f script.js site/ 2>/dev/null || true
           cp -f styles.css site/ 2>/dev/null || true
           cp -f .nojekyll site/ 2>/dev/null || true
+          cp -f robots.txt site/ 2>/dev/null || true
           # If you have other assets or folders, copy them here, e.g. cp -r assets site/ || true
 
       - name: Deploy to gh-pages branch
