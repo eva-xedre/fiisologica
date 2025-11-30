@@ -4,25 +4,18 @@ This repository contains a small static website (root contains `index.html`, `sc
 
 ## How it is published
 
-- Workflow: `.github/workflows/deploy.yml`
-- Triggers: push to `main` and manual dispatch (workflow_dispatch)
-- Actions used: `actions/configure-pages`, `actions/upload-pages-artifact`, `actions/deploy-pages`
-- Published directory: repository root by default
+ - Workflow: `.github/workflows/deploy.yml`
+ - Triggers: push to `main` and manual dispatch (workflow_dispatch)
+ - Deployment method: publishes a prepared `site/` folder to the `gh-pages` branch using `peaceiris/actions-gh-pages@v4`.
+ - Published directory: `site/` by default (the workflow copies `index.html`, `script.js`, `styles.css`, and `.nojekyll` into `site/` before publishing)
 
 After a successful workflow run the Pages site and its URL are available in the repository's Pages settings panel.
 
 ## Change the publish directory
 
-If you prefer to publish a subdirectory (for example `dist/`), update the `path` on the `upload-pages-artifact` step in `.github/workflows/deploy.yml`:
+If you prefer to publish a different directory (for example `dist/`), update the `publish_dir` value in `.github/workflows/deploy.yml` and adjust the `Prepare site` step to copy or build into that directory.
 
-```yaml
-      - name: Upload artifact (site)
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: dist/
-```
-
-If you publish a build output directory, add a build step (for example `npm run build`) before uploading the artifact and make sure the build writes into the configured directory.
+If you publish a build output directory, add a build step (for example `npm run build`) before the `Prepare site`/copy step and make sure the build writes into the configured directory.
 
 ## Triggering and testing
 

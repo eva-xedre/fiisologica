@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages (gh-pages branch)
 
 on:
   push:
@@ -8,20 +8,26 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v3
+      - name: Prepare `site/` folder
+        run: |
+          rm -rf site
+          mkdir site
+          # Copy common static site files. Add more paths if your site uses other files/folders.
+          cp -f index.html site/ 2>/dev/null || true
+          cp -f script.js site/ 2>/dev/null || true
+          cp -f styles.css site/ 2>/dev/null || true
+          cp -f .nojekyll site/ 2>/dev/null || true
+          # If you have other assets or folders, copy them here, e.g. cp -r assets site/ || true
 
-      - name: Upload artifact (repo root)
-        uses: actions/upload-pages-artifact@v1
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: .
-
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          publish_branch: gh-pages
+          # Overwrite the branch content on each deploy (clean deploy)
+          keep_files: false
